@@ -1,12 +1,11 @@
 // import 'package:attendance/curve_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teachers_portal/register.dart';
-
+import 'dart:async';
 import 'my_classes.dart';
 import 'faculty_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'login_template.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,7 +16,74 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  void getUserKey() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? userKey = prefs.getString('key1');
+
+    String userKey1 = "";
+    print("hi dear");
+    print(userKey);
+    if (userKey != null) {
+      userKey1 = userKey;
+      Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MyClasses(teacherKey: userKey1))));
+    } else {
+      Timer(
+          Duration(seconds: 3),
+          () => Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Home())));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserKey();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              height: 220,
+              width: 220,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Text(
+                "Attendance System \n    Teacher's Portal",
+                style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 25,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -5,6 +5,8 @@ const lectureRegister = "/lecturer/register";
 
 const lecturerGetCourses = "/lecturer/get-courses";
 
+const lecturerAddCourse = "/lecturer/add-course";
+const lecturerAddAttendance = "/lecturer/add-attendance";
+const lecturerGetAttendance = "/lecturer/get-attendance";
 
-const lecturerAddCourse = "lecturer/add-course";
-const lecturerAddAttendance = "lecturer/add-attendance";
+const lectureDeleteCourse = "/lecturer/delete-course";

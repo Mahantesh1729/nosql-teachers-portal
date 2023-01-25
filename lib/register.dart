@@ -37,7 +37,7 @@ class _FacultyRegisterState extends State<FacultyRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Colors.white,
       body: Form(
         child: Center(
           child: Column(
@@ -48,7 +48,7 @@ class _FacultyRegisterState extends State<FacultyRegister> {
               ),
               Text(
                 "Register",
-                style: TextStyle(color: Colors.white, fontSize: 35),
+                style: TextStyle(color: Colors.black, fontSize: 35),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.width * 0.03,
@@ -120,6 +120,7 @@ class _FacultyRegisterState extends State<FacultyRegister> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 45),
                 child: TextField(
+                  obscureText: true,
                   controller: passwordController,
                   // textAlign: TextAlign.center,
                   decoration: const InputDecoration(
@@ -134,6 +135,7 @@ class _FacultyRegisterState extends State<FacultyRegister> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 45),
                 child: TextField(
+                  obscureText: true,
                   controller: confirmPasswordController,
                   // textAlign: TextAlign.center,
                   decoration: const InputDecoration(
@@ -246,7 +248,7 @@ class _FacultyRegisterState extends State<FacultyRegister> {
                 children: [
                   Text(
                     "Existing User, ",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   ),
                   TextButton(
                     onPressed: () {

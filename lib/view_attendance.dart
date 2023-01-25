@@ -12,25 +12,26 @@ import 'consts/constants.dart';
 
 enum Attendance { present, absent }
 
-class TakeAttendance extends StatefulWidget {
-  TakeAttendance({required this.courseName, required this.teacherKey});
+class ViewAttendance extends StatefulWidget {
+  ViewAttendance({required this.courseName, required this.teacherKey});
 
   final String courseName;
   final String teacherKey;
 
   @override
-  State<TakeAttendance> createState() => _TakeAttendanceState();
+  State<ViewAttendance> createState() => _ViewAttendanceState();
 }
 
-class _TakeAttendanceState extends State<TakeAttendance> {
+class _ViewAttendanceState extends State<ViewAttendance> {
   var parsedJson;
   bool loading = true;
   int ln = 0;
+
   Future<void> getStudents() async {
     var url = Uri.parse(baseurl + lecturerGetAttendance);
 
     String k = widget.teacherKey.substring(1, widget.teacherKey.length - 1);
-
+    print(k);
     var response = await http.post(
       url,
       body: {"courseName": widget.courseName},
@@ -42,10 +43,9 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       setState(() {
         loading = false;
       });
-      if (response.body != "No courses Yet") {
+      if (response.body != "No courses Yet")
         parsedJson = jsonDecode(response.body);
-        ln = parsedJson["All_Students_Data"].length;
-      } else
+      else
         parsedJson = [];
     } else {
       print(response.statusCode);
@@ -66,10 +66,6 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       print(response.statusCode);
       print(response.body);
 
-      setState(() {
-        loading = false;
-      });
-
       if (response.body != "No courses Yet") {
         parsedJson = jsonDecode(response.body);
         ln = parsedJson["All_Students_Data"].length;
@@ -79,6 +75,10 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       print(response.statusCode);
       print(response.body);
     }
+
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -92,64 +92,12 @@ class _TakeAttendanceState extends State<TakeAttendance> {
 
   int cardCount = 0;
   List<int> cardList = [];
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: getStudents,
       child: Scaffold(
-        floatingActionButton: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.2,
-          child: FloatingActionButton(
-            backgroundColor: Color.fromARGB(
-              230,
-              247,
-              187,
-              133,
-            ),
-            shape: BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5))),
-            child: Text("Submit"),
-            onPressed: () async {
-              var url = Uri.parse(baseurl + lecturerAddAttendance);
-
-              String k =
-                  widget.teacherKey.substring(1, widget.teacherKey.length - 1);
-              DateTime now = new DateTime.now();
-
-              String today = DateTime(now.day, now.month, now.year).toString();
-
-              setState(() {
-                loading = true;
-              });
-              List arr = [];
-
-              for (int i = 0; i < parsedJson["All_Students_Data"].length; i++)
-                arr.add({
-                  "student": parsedJson["All_Students_Data"][i]["usn"],
-                  "attendance": attended[i] == Attendance.present ? true : false
-                });
-              print("ranavickrama");
-              var response = await http.post(url,
-                  headers: {
-                    'Content-type': 'application/json',
-                    "Accept": "application/json",
-                  },
-                  body: json.encode({
-                    "key": "63c2753e81a1369752a9b7d6",
-                    "dateString": "12122024",
-                    "course": widget.courseName,
-                    "attendances": arr
-                  }));
-              print("kantirava");
-              print(response.statusCode);
-              print(response.body);
-
-              setState(() {
-                loading = false;
-              });
-            },
-          ),
-        ),
         backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -161,7 +109,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                         "https://c4.wallpaperflare.com/wallpaper/629/222/456/plain-hd-widescreen-wallpaper-preview.jpg"),
                     fit: BoxFit.cover)),
           ),
-          title: Text("Take Attendance"),
+          title: Text("View Attendance"),
         ),
         body: loading
             ? Center(child: CircularProgressIndicator())
@@ -170,7 +118,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                     children: [
                       ListView(),
                       Center(
-                        child: Text("No Students Joined Yet!"),
+                        child: Text("No Classes Created Yet!"),
                       ),
                     ],
                   )
@@ -204,30 +152,15 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                                           ],
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Text("P"),
-                                          Radio(
-                                              value: Attendance.present,
-                                              groupValue: attended[index],
-                                              activeColor: Colors.green,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  attended[index] = value!;
-                                                });
-                                              }),
-                                          Text("A"),
-                                          Radio(
-                                              activeColor: Colors.red,
-                                              value: Attendance.absent,
-                                              groupValue: attended[index],
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  attended[index] = value!;
-                                                });
-                                              }),
-                                        ],
-                                      )
+                                      Text(parsedJson["All_Students_Data"]
+                                                  [index]["Attendance"] ==
+                                              null
+                                          ? "0"
+                                          : parsedJson["All_Students_Data"]
+                                                      [index]["Attendance"]
+                                                  .toDouble()
+                                                  .toStringAsFixed(2) +
+                                              "%"),
                                     ],
                                   ),
                                 ),

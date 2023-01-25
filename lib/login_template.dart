@@ -1,5 +1,5 @@
-import 'package:teachers_portal/consts/constants.dart';
 import 'package:teachers_portal/register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'my_classes.dart';
 import 'package:flutter/material.dart';
@@ -126,14 +126,21 @@ class _LoginState extends State<Login> {
                       });
                       await Future.delayed(Duration(seconds: 1));
 
+                      final prefs = await SharedPreferences.getInstance();
+
                       String teacherKey = response.body;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MyClasses(
-                                  teacherKey: teacherKey,
-                                )),
-                      );
+
+                      await prefs.setString('key1', teacherKey);
+
+                      final String? userKey = prefs.getString('key1');
+
+                      print(userKey);
+                      print("hello world");
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  MyClasses(teacherKey: teacherKey)));
                     } else {
                       setState(() {
                         loginMessage = "Login failed!";
